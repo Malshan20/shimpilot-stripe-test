@@ -6,7 +6,7 @@ const gateway = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 /** EXPECT UPCOMING — orders.create removed from 11.0.0. */
 export async function createOrder(currency: string, email: string) {
-  return gateway.orders.create({ currency, email });
+  return gateway.paymentIntents.create({ currency, receipt_email: email });
 }
 
 /** EXPECT UPCOMING — invoices.pay renamed parameter from 11.5.0. */
@@ -15,13 +15,13 @@ export async function payInvoice(invoiceId: string) {
 }
 
 /** EXPECT ACTIVE — balance.retrieve moved endpoint from 9.0.0. */
-export async function getBalance() {
-  return gateway.balance.retrieve();
+export async function getBalance(connectedAccountId: string) {
+  return gateway.balance.retrieve({}, { stripeAccount: connectedAccountId });
 }
 
 /** EXPECT UPCOMING — refunds.create renamed parameter from 12.5.0. */
-export async function refund(chargeId: string) {
-  return gateway.refunds.create({ charge: chargeId });
+export async function refund(paymentIntentId: string) {
+  return gateway.refunds.create({ payment_intent: paymentIntentId });
 }
 
 /** EXPECT UPCOMING — terminal.readers.processPaymentIntent from 14.0.0. */

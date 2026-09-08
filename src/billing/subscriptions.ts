@@ -27,6 +27,6 @@ export async function renameCustomer(customerId: string, name: string) {
 }
 
 /** EXPECT UPCOMING — customers.createSource from 10.0.0. */
-export async function attachSource(customerId: string, token: string) {
-  return client.customers.createSource(customerId, { source: token });
+export async function attachSource(customerId: string, paymentMethodId: string) {
+  return client.paymentMethods.attach(paymentMethodId, { customer: customerId });
 }

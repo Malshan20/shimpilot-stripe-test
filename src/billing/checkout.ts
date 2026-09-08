@@ -6,17 +6,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 /** EXPECT ACTIVE — charges.create deprecated from 8.0.0, repo is on 9.16.0. */
 export async function createLegacyCharge(amount: number, currency: string, source: string) {
-  return stripe.charges.create({ amount, currency, source });
+  return stripe.paymentIntents.create({ amount, currency, payment_method: source, confirm: true, automatic_payment_methods: { enabled: true } });
 }
 
 /** EXPECT ACTIVE — charges.capture deprecated from 8.0.0. */
-export async function captureLegacyCharge(chargeId: string) {
-  return stripe.charges.capture(chargeId);
+export async function captureLegacyCharge(paymentIntentId: string) {
+  return stripe.paymentIntents.capture(paymentIntentId);
 }
 
 /** EXPECT UPCOMING — paymentIntents.create renamed parameter from 12.0.0. */
 export async function createIntent(amount: number, currency: string) {
-  return stripe.paymentIntents.create({ amount, currency, confirm: true });
+  return stripe.paymentIntents.create({ amount, currency, confirm: true, automatic_payment_methods: { enabled: true } });
 }
 
 /** EXPECT UPCOMING — paymentIntents.confirm from 12.0.0. */
